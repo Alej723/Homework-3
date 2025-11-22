@@ -2,7 +2,7 @@ import React from 'react';
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import './index.css';
 
-// Navigation component that will be used on all pages
+/* Navigation component that will be used on all pages */
 function Navbar() {
   return (
     <header className="navbar">
@@ -22,7 +22,7 @@ function Navbar() {
   );
 }
 
-// Home Page
+/* Home Page */
 function HomePage() {
   return (
     <div>
@@ -34,7 +34,7 @@ function HomePage() {
   );
 }
 
-// About Page
+/* About Page main info of page */
 function AboutPage() {
   return (
     <div>
@@ -65,7 +65,7 @@ function AboutPage() {
   );
 }
 
-// Menu Page
+/* Menu page this is also where the shopping cart functions */ 
 function MenuPage() {
   const [cart, setCart] = React.useState([]);
 
@@ -85,7 +85,7 @@ function MenuPage() {
     <div>
       <Navbar />
       
-      {/* Cart Container */}
+      {}
       <div className="cart-container">
         <h3>To go Cart</h3>
         <div id="cartItems">
@@ -187,7 +187,7 @@ function MenuPage() {
   );
 }
 
-// Contact Page
+/* Contact page */
 function ContactPage() {
   return (
     <div>
@@ -224,7 +224,7 @@ function ContactPage() {
   );
 }
 
-// Gallery Page
+/* Gallery page */
 function GalleryPage() {
   const [currentSlide, setCurrentSlide] = React.useState(0);
 
@@ -286,7 +286,7 @@ function GalleryPage() {
   );
 }
 
-// Main App with Routes
+/* Main routes */
 export default function RestaurantWebsite() {
   return (
     <BrowserRouter>
