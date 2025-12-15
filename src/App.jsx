@@ -68,124 +68,126 @@ function AboutPage() {
 /* Menu page this is also where the shopping cart functions */ 
 function MenuPage() {
   const [cart, setCart] = React.useState([]);
+  const [menuItems, setMenuItems] = React.useState([]);
+  const [loading, setLoading] = React.useState(true);
 
-  const addToCart = (name, price) => {
-    setCart([...cart, { name, price }]);
-  };
+  React.useEffect(() => {
+    fetch('http://localhost:3006/Restaurant')
+      .then(res => res.json())
+      .then(data => {
+        setMenuItems(data);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error('Error fetching menu:', err);
+        setLoading(false);
+      });
+  }, []);
 
-  const clearCart = () => {
-    setCart([]);
-  };
+const addToCart = (item) => {
+  setCart(prevCart => {
+    const existing = prevCart.find(i => i._id === item._id);
+    if (existing) {
+      return prevCart.map(i =>
+        i._id === item._id ? { ...i, quantity: i.quantity + 1 } : i
+      );
+    } else {
+      return [...prevCart, { ...item, quantity: 1 }];
+    }
+  });
+};
+
+
+
+  const clearCart = () => setCart([]);
 
   const calculateTotal = () => {
-    return cart.reduce((total, item) => total + item.price, 0);
+    return cart.reduce((total, item) => total + item.price * (item.quantity || 1), 0);
   };
+
+  const submitOrder = async () => {
+    if (!cart.length) return alert('Cart is empty!');
+
+    try {
+      const response = await fetch('http://localhost:3006/Orders', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    items: cart,
+    totalPrice: calculateTotal(),
+    customerName: 'Guest',
+    status: 'pending'
+  })
+});
+
+      if (response.ok) {
+        alert('Order placed successfully!');
+        clearCart();
+      }
+    } catch (err) {
+      console.error('Error placing order:', err);
+      alert('Failed to place order');
+    }
+  };
+
+  if (loading) return <div>Loading menu...</div>;
 
   return (
     <div>
       <Navbar />
-      
-      {}
+
+      {/* Cart */}
       <div className="cart-container">
         <h3>To go Cart</h3>
         <div id="cartItems">
-          {cart.map((item, index) => (
-            <div key={index}>
-              {item.name} - ${item.price}
+          {cart.map(item => (
+            <div key={item._id}>
+              {item.name} x {item.quantity} - ${item.price * item.quantity}
             </div>
           ))}
         </div>
         <hr />
         <div id="cartTotal"><strong>Total: ${calculateTotal()}</strong></div>
+        <button className="cart-btn" onClick={submitOrder} style={{ width: '100%', marginTop: '10px' }}>
+          Place Order
+        </button>
         <button className="cart-btn" onClick={clearCart} style={{ width: '100%', marginTop: '10px', backgroundColor: '#ff6b6b' }}>
           Clear Cart
         </button>
       </div>
 
+
       <div className="hero">
         <img src="imgs/Hero.png" alt="Hero" />
       </div>
-      <br />
-      <br />
-      
+
+      {/* Menu Table */}
       <div className="slideshow-container">
         <table>
-          <tbody>
+          <thead>
             <tr>
-              <th>Appetizer</th>
+              <th>Item</th>
               <th>Price</th>
               <th>Action</th>
             </tr>
-            <tr>
-              <td>Garlic Bread</td>
-              <td>$7</td>
-              <td><button className="cart-btn" onClick={() => addToCart('Garlic Bread', 7)}>Add to Cart</button></td>
-            </tr>
-            <tr>
-              <td>Caesar Salad</td>
-              <td>$5</td>
-              <td><button className="cart-btn" onClick={() => addToCart('Caesar Salad', 5)}>Add to Cart</button></td>
-            </tr>
-            <tr>
-              <td>Tomato Soup</td>
-              <td>$5</td>
-              <td><button className="cart-btn" onClick={() => addToCart('Tomato Soup', 5)}>Add to Cart</button></td>
-            </tr>
-            <tr>
-              <th>Main Course</th>
-              <th></th>
-              <th></th>
-            </tr>
-            <tr>
-              <td>Grilled Chicken with Vegetables</td>
-              <td>$14</td>
-              <td><button className="cart-btn" onClick={() => addToCart('Grilled Chicken with Vegetables', 14)}>Add to Cart</button></td>
-            </tr>
-            <tr>
-              <td>Margherita Pizza</td>
-              <td>$15</td>
-              <td><button className="cart-btn" onClick={() => addToCart('Margherita Pizza', 15)}>Add to Cart</button></td>
-            </tr>
-            <tr>
-              <td>Spaghetti Bolognese</td>
-              <td>$23</td>
-              <td><button className="cart-btn" onClick={() => addToCart('Spaghetti Bolognese', 23)}>Add to Cart</button></td>
-            </tr>
-            <tr>
-              <th>Desserts</th>
-              <th></th>
-              <th></th>
-            </tr>
-            <tr>
-              <td>Ice cream</td>
-              <td>$4</td>
-              <td><button className="cart-btn" onClick={() => addToCart('Ice cream', 4)}>Add to Cart</button></td>
-            </tr>
-            <tr>
-              <td>Chocolate Cake</td>
-              <td>$10</td>
-              <td><button className="cart-btn" onClick={() => addToCart('Chocolate Cake', 10)}>Add to Cart</button></td>
-            </tr>
-            <tr>
-              <td>Pie</td>
-              <td>$6</td>
-              <td><button className="cart-btn" onClick={() => addToCart('Pie', 6)}>Add to Cart</button></td>
-            </tr>
+          </thead>
+          <tbody>
+            {menuItems.map(item => (
+              <tr key={item._id}>
+                <td>{item.name}</td>
+                <td>${item.price}</td>
+                <td>
+                  <button className="cart-btn" onClick={() => addToCart(item)}>Add to Cart</button>
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
     </div>
   );
 }
+
 
 /* Contact page */
 function ContactPage() {
