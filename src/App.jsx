@@ -97,8 +97,6 @@ const addToCart = (item) => {
   });
 };
 
-
-
   const clearCart = () => setCart([]);
 
   const calculateTotal = () => {
@@ -136,27 +134,6 @@ const addToCart = (item) => {
     <div>
       <Navbar />
 
-      {/* Cart */}
-      <div className="cart-container">
-        <h3>To go Cart</h3>
-        <div id="cartItems">
-          {cart.map(item => (
-            <div key={item._id}>
-              {item.name} x {item.quantity} - ${item.price * item.quantity}
-            </div>
-          ))}
-        </div>
-        <hr />
-        <div id="cartTotal"><strong>Total: ${calculateTotal()}</strong></div>
-        <button className="cart-btn" onClick={submitOrder} style={{ width: '100%', marginTop: '10px' }}>
-          Place Order
-        </button>
-        <button className="cart-btn" onClick={clearCart} style={{ width: '100%', marginTop: '10px', backgroundColor: '#ff6b6b' }}>
-          Clear Cart
-        </button>
-      </div>
-
-
       <div className="hero">
         <img src="imgs/Hero.png" alt="Hero" />
       </div>
@@ -183,6 +160,26 @@ const addToCart = (item) => {
             ))}
           </tbody>
         </table>
+      </div>
+
+      {/* Cart - Now at bottom */}
+      <div className="cart-container">
+        <h3>To go Cart</h3>
+        <div id="cartItems">
+          {cart.map(item => (
+            <div key={item._id}>
+              {item.name} x {item.quantity} - ${item.price * item.quantity}
+            </div>
+          ))}
+        </div>
+        <hr />
+        <div id="cartTotal"><strong>Total: ${calculateTotal()}</strong></div>
+        <button className="cart-btn" onClick={submitOrder} style={{ width: '100%', marginTop: '10px' }}>
+          Place Order
+        </button>
+        <button className="cart-btn" onClick={clearCart} style={{ width: '100%', marginTop: '10px', backgroundColor: '#ff6b6b' }}>
+          Clear Cart
+        </button>
       </div>
     </div>
   );
