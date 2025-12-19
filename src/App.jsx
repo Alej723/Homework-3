@@ -162,7 +162,7 @@ const addToCart = (item) => {
         </table>
       </div>
 
-      {/* Cart - Now at bottom */}
+      {/* made sure that this will go at the botton in css file */}
       <div className="cart-container">
         <h3>To go Cart</h3>
         <div id="cartItems">
